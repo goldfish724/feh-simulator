@@ -1,0 +1,59 @@
+
+input[type='text'], input[type='number'] {
+  padding: 6px;
+  margin: 2px;
+  font-size: 1em;
+}
+#main {
+  display: inline-block;
+  width: 100%;
+  max-width: 1000px;
+  padding-top: 80px;
+}
+
+.input-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card {
+  flex-grow: 1;
+  margin: 6px;
+  display: inline-block;
+  border: none;
+  box-shadow: 0 1px 2px rgba(black, 0.24), 0 1px 3px rgba(black, 0.12);
+  padding: 20px;
+  text-align: left;
+  width: 25%;
+  background: white;
+
+  * {
+    display: block;
+  }
+
+  .title {
+    font-size: 1.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .input-row .label {
+    margin-bottom: 6px;
+  }
+
+  .card-item {
+    margin-top: 12px;
+  }
+}
+
+
+.submit-row {
+}
+
+.charts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+

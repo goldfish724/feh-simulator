@@ -1,0 +1,72 @@
+<div id="main">
+  <div class="input-row">
+
+    <div class="card" *ngFor="let color of colors">
+      <div class="title">
+        {{ color }}
+      </div>
+
+
+      <div class="hero-names">
+        Focus Hero Names:
+
+        <div *ngFor="let name of names[color]; let i = index;">
+          <input type="text" [(ngModel)]="names[color][i].name">
+          <button (click)="names[color].splice(i, 1)">
+              Remove hero
+          </button>
+        </div>
+        <button (click)="names[color].push({name: 'Red Hero ' + (names[color].length + 1)})">
+            Add hero
+        </button>
+      </div>
+
+      <hr/>
+
+      <div class="form-row">
+        <input type="checkbox" [(ngModel)]="simulator.shouldRoll[color]"/>
+        Roll {{ color }}
+      </div>
+
+      <div class="conditions card-item" *ngIf="simulator.shouldRoll[color]">
+        Stop after receiving:
+
+        <div class="condition" *ngFor="let condition of simulator.stopConditions[color]; let i = index">
+          <div *ngIf="i != 0">
+            and
+          </div>
+          <div class="hero-row card-item">
+            <input type="number" [(ngModel)]="condition.count"> copies of
+
+            <select [(ngModel)]="condition.index">
+              <option *ngFor="let name of names[color]; let j = index" [ngValue]="j">
+                {{ name.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <button (click)="addCondition(color)">
+            Add condition
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="submit-row">
+      <button (click)="debug()">
+          Debug
+      </button>
+  </div>
+
+
+  <div class="charts">
+    <feh-chart
+            *ngFor="let chartData of charts; let i = index"
+            [datasets]="chartData.datasets"
+            [title]="chartData.title"
+            [colors]="chartData.colors"
+            [labels]="chartData.labels"></feh-chart>
+  </div>
+</div>
+
+
