@@ -151,6 +151,8 @@ export class AppComponent {
                 data: [],
             }],
             labels: [],
+            mean: this.mean(samples).toFixed(2),
+            median: this.median(samples)
         };
 
         let min = 0;
@@ -177,5 +179,26 @@ export class AppComponent {
         }
 
         return chart;
+    }
+
+    public mean(values) {
+        let sum = 0;
+        for (let i = 0; i < values.length; i++) {
+            sum += values[i];
+        }
+        return sum / values.length;
+    }
+
+    public median(values) {
+        values.sort((a, b) => {
+            return a - b;
+        });
+        let half = Math.floor(values.length / 2);
+
+        if (values.length % 2) {
+            return values[half];
+        } else {
+            return (values[half-1] + values[half]) / 2.0;
+        }
     }
 }

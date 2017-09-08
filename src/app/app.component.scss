@@ -29,6 +29,10 @@ $colorless: #929292;
   .card {
     width: 100%;
     max-width: 275px;
+
+    @media (max-width: 570px) {
+      max-width: 380px;
+    }
   }
 }
 
@@ -253,6 +257,7 @@ input.non-md {
 .submit-row {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   align-items: flex-start;
   margin-top: 20px;
 
@@ -304,6 +309,25 @@ input.non-md {
 
       .chart-container {
         padding: 12px 0;
+        text-align: center;
+        margin-bottom: 12px;
+
+        .statistics {
+          font-size: 12px;
+          display: inline-block;
+          text-align: left;
+          margin-top: 4px;
+          color: #888;
+
+          .statistic {
+
+            .statistic-label {
+              margin-right: 8px;
+              font-size: 11px;
+              text-transform: uppercase;
+            }
+          }
+        }
       }
     }
   }

@@ -175,6 +175,14 @@
                     [title]="chartData.title"
                     [colors]="chartData.colors"
                     [labels]="chartData.labels"></feh-chart>
+            <div *ngIf="chartData['mean']" class="statistics">
+              <div class="statistic">
+                <span class="statistic-label">Mean:</span> {{ chartData['mean'] }}
+              </div>
+              <div class="statistic">
+                <span class="statistic-label">Median:</span> {{ chartData['median'] }}
+              </div>
+            </div>
           </div>
         </div>
       </div>

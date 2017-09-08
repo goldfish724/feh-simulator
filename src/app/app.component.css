@@ -19,6 +19,9 @@
   .input-row .card {
     width: 100%;
     max-width: 275px; }
+    @media (max-width: 570px) {
+      .input-row .card {
+        max-width: 380px; } }
 
 button i {
   color: #555;
@@ -165,6 +168,7 @@ input.non-md {
 .submit-row {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   align-items: flex-start;
   margin-top: 20px; }
   .submit-row .card {
@@ -199,6 +203,18 @@ input.non-md {
       flex-wrap: wrap;
       justify-content: space-around; }
       .charts .chart-category .charts-container .chart-container {
-        padding: 12px 0; }
+        padding: 12px 0;
+        text-align: center;
+        margin-bottom: 12px; }
+        .charts .chart-category .charts-container .chart-container .statistics {
+          font-size: 12px;
+          display: inline-block;
+          text-align: left;
+          margin-top: 4px;
+          color: #888; }
+          .charts .chart-category .charts-container .chart-container .statistics .statistic .statistic-label {
+            margin-right: 8px;
+            font-size: 11px;
+            text-transform: uppercase; }
 
 /*# sourceMappingURL=app.component.css.map */
