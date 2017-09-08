@@ -4,6 +4,7 @@ import {Constants} from "./constants";
 export class Results {
     counts: any;
     conditionsMet: any = {};
+    allConditionsMet: boolean = false;
 
     constructor(focusCounts) {
         this.counts = Results.createEmptyCounts(focusCounts);

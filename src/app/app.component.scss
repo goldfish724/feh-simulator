@@ -1,31 +1,134 @@
+$red: #cb6165;
+$blue: #545fb4;
+$green: #57b457;
+$colorless: #929292;
 
-input[type='text'], input[type='number'] {
-  padding: 6px;
-  margin: 2px;
-  font-size: 1em;
-}
 #main {
   display: inline-block;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1150px;
   padding-top: 80px;
+  color: #555;
+}
+
+.align-right {
+  text-align: right;
+
+  button {
+    display: inline-block !important;
+  }
 }
 
 .input-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  width: 100%;
+  align-items: flex-start;
+
+  .card {
+    width: 100%;
+    max-width: 275px;
+  }
 }
 
+button i {
+  color: #555; // Icons
+  transition: color 0.15s;
+  display: inline-block !important;
+}
+
+
+button.remove {
+  i {
+    color: #555;
+    transition: color 0.15s;
+  }
+
+  &:hover i {
+    color: black;
+  }
+}
+
+button {
+  //font-weight: 100;
+  font-size: 0.8em;
+  text-transform: uppercase;
+}
+
+input.non-md {
+  padding: 12px;
+  margin: 4px 0;
+  //border: 1px solid #888;
+  border: none;
+  box-shadow: 0 1px 2px rgba(black, 0.24), 0 1px 3px rgba(black, 0.12);
+  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222;
+  //font-size: 0.9em;
+  font-size: 14px;
+  color: #555;
+  border-radius: 2px;
+
+  &:focus {
+    outline: none;
+    background: rgba(black, 0.01);
+    transition: background 0.15s;
+  }
+}
+
+
 .card {
-  flex-grow: 1;
   margin: 6px;
   display: inline-block;
   border: none;
   box-shadow: 0 1px 2px rgba(black, 0.24), 0 1px 3px rgba(black, 0.12);
-  padding: 20px;
   text-align: left;
-  width: 25%;
-  background: white;
+  background: white;//#FEFEFE;
+  border-radius: 2px;
+
+  .hero-names .non-md {
+    box-shadow: none !important;
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .focus-hero-names {
+    text-transform: uppercase;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .header {
+    color: white;
+
+    &.red {
+      background: $red;
+    }
+    &.green {
+      background: $green;
+    }
+    &.blue {
+      background: $blue;
+    }
+    &.colorless {
+      background: $colorless;
+    }
+    padding: 20px;
+  }
+
+  .card-content {
+    padding: 5px 20px 20px;
+  }
+
+  hr {
+    margin: 16px 0;
+    border: none;
+    height: 1px;
+    width: 100%;
+    background: #BABABA;
+  }
 
   * {
     display: block;
@@ -44,16 +147,167 @@ input[type='text'], input[type='number'] {
   .card-item {
     margin-top: 12px;
   }
+
+  .add-focus-row {
+    margin-top: 10px;
+  }
+
+  .input-button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    input {
+      flex-grow: 1;
+    }
+  }
+
+  .stop-after-receiving {
+    text-transform: uppercase;
+    font-size: 12px;
+    margin: 24px 0 4px;
+  }
+
+
+  .checkbox-label {
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .condition {
+
+    .and {
+      text-transform: uppercase;
+      text-align: center;
+      font-size: 12px;
+      margin: 8px 0;
+    }
+
+
+    .condition-inner {
+      padding: 16px 20px 24px;
+      margin: 16px -20px;
+      background: #faeeed;
+      background: #f3f3f3;
+      border-top: 1px solid #DDD;
+      border-bottom: 1px solid #DDD;
+      position: relative;
+
+      .remove {
+        display: block;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: color 0.15s;
+        font-size: 10px;
+        color: #999;
+
+        &:hover {
+          cursor: pointer;
+          color: black;
+        }
+      }
+
+      .copies-of-row {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding-right: 18px;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      input[type='number'] {
+        max-width: 50px;
+        display: inline-block;
+        transition: box-shadow 0.15s;
+        background: white !important;
+
+        &:focus {
+          background: white !important;
+        }
+      }
+
+      input {
+        display: inline-block;
+      }
+      span {
+        display: inline-block;
+      }
+
+      md-select {
+        padding-top: 8px;
+      }
+    }
+  }
 }
+
+
 
 
 .submit-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+
+  strong {
+  }
+
+  .card {
+    padding: 30px;
+    margin: 26px 8px 20px;
+    border-top: 8px solid #e26c70;
+    width: 300px;
+
+    p {
+      line-height: 20px;
+    }
+
+    .run-simulations-container {
+      padding-top: 12px;
+    }
+
+  }
 }
 
 .charts {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  max-width: 850px;
+  width: 100%;
+  display: inline-block;
+  padding-bottom: 200px;
+
+  .chart-category {
+    border-radius: 2px;
+    background: white;
+    padding: 30px;
+    margin: 24px 0;
+
+    .title {
+      margin: 8px 0 24px;
+      font-size: 1.3em;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: left;
+      padding-left: 30px;
+    }
+
+    .charts-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+
+      .chart-container {
+        padding: 12px 0;
+      }
+    }
+  }
 }
+
 
 

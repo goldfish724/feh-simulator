@@ -16,7 +16,7 @@ export class ChartComponent implements OnInit {
 
     public barChartOptions: any;
     public barChartType: string = 'bar';
-    public barChartLegend: boolean = false;
+    public legend: boolean = false;
 
 
     constructor() {
@@ -36,7 +36,17 @@ export class ChartComponent implements OnInit {
         this.barChartOptions = {
             scaleShowVerticalLines: false,
             scales: {
-                yAxes: [{ticks: ticks}]
+                yAxes: [{
+                    ticks: ticks,
+                    gridLines: {
+                        color: "rgba(0, 0, 0, 0)",
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        color: "rgba(0, 0, 0, 0)",
+                    }
+                }]
             },
             responsive: true
         };
@@ -50,6 +60,14 @@ export class ChartComponent implements OnInit {
             }
         }
 
+        if (this.percents) {
+            this.datasets.forEach(dataset => {
+                for (let i = 0; i < dataset.data.length; i++) {
+                    dataset.data[i] = dataset.data[i].toFixed(3);
+                }
+            });
+        }
+
         if (this.colors) {
             let colors = this.colors;
             this.colors = [];
@@ -57,14 +75,5 @@ export class ChartComponent implements OnInit {
                 this.colors.push({backgroundColor: color});
             });
         }
-    }
-
-    // events
-    public chartClicked(e:any):void {
-        console.log(e);
-    }
-
-    public chartHovered(e:any):void {
-        console.log(e);
     }
 }

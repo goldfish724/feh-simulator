@@ -1,13 +1,12 @@
 <div>
     <canvas baseChart
+            width="300"
+            height="200"
             [datasets]="datasets"
             [labels]="labels"
             [options]="barChartOptions"
-            [legend]="barChartLegend"
+            [legend]="legend"
             [colors]="colors"
 
-            [chartType]="barChartType"
-            (chartHover)="chartHovered($event)"
-            (chartClick)="chartClicked($event)"></canvas>
-
+            [chartType]="barChartType"></canvas>
 </div>

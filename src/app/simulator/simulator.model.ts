@@ -4,11 +4,18 @@ import {Results} from './results.model';
 
 
 export class Simulator {
-    numOrbs: number = 500;
-    unitCounts: any;
-    stopConditions: any;
-    colorGivenRarityDist: any;
-    shouldRoll = {'red': true, 'blue': true, 'green': true, 'colorless': true};
+    public numOrbs: number = 500;
+    public unitCounts: any;
+    public stopConditions: any;
+    public colorGivenRarityDist: any;
+    public shouldRoll = {'red': true, 'blue': true, 'green': true, 'colorless': true};
+
+    public baseProb = {
+        'focus': .03,
+        'five': .03,
+        'four': .58,
+        'three': .36
+    };
 
     constructor() {
         this.unitCounts = {
@@ -45,6 +52,8 @@ export class Simulator {
     runTrial() {
         const results = new Results(this.unitCounts['focus']);
         const targetColors = [];
+        let rollsWithoutFiveStar = 0;
+
         Object.keys(this.shouldRoll).forEach(color => {
             if (this.shouldRoll[color]) {
                 targetColors.push(color);
@@ -60,8 +69,18 @@ export class Simulator {
 
             // A single roll
             const stones = [];
+            let pityRate = Math.floor(rollsWithoutFiveStar / 5) * 0.0025;
+            let nonFiveProb = this.baseProb['five'] + this.baseProb['four'];
+            let rarityDistribution = {
+                'focus': this.baseProb['focus'] + pityRate,
+                'five': this.baseProb['five'] + pityRate,
+                'four': this.baseProb['four'] - (this.baseProb['four'] * 2 * pityRate / nonFiveProb),
+                'three': this.baseProb['three'] - (this.baseProb['three'] * 2 * pityRate / nonFiveProb)
+            };
+
+
             for (let i = 0; i < 5; i++) {
-                let rarity = this.selectRarity();
+                let rarity = this.sampleDistribution(rarityDistribution);
                 stones.push({
                     'color': this.selectColorGivenRarity(rarity),
                     'rarity': rarity
@@ -69,16 +88,23 @@ export class Simulator {
             }
 
             let rollIndex = 0;
+
+            let desiredColorExists = false;
+            for (let i = 0; i < stones.length; i++) {
+                if (targetColors.indexOf(stones[i]['color']) != -1) {
+                    desiredColorExists = true;
+                    break;
+                }
+            }
+
+
             for (let i = 0; i < stones.length; i++) {
                 let color = stones[i]['color'];
                 let rarity = stones[i]['rarity'];
-                if (targetColors.indexOf(color) != -1) {
+
+                if (targetColors.indexOf(color) != -1 || (!desiredColorExists && rollIndex == 1)) {
                     if (orbsRemaining >= Constants.costs[rollIndex]) {
                         orbsRemaining -= Constants.costs[rollIndex];
-
-                        // if (rarity == 'focus') {
-                        //     console.log("rolled " + color + " " + rarity);
-                        // }
 
                         if (rarity == 'focus') {
                             let numFocus = this.unitCounts['focus'][color];
@@ -87,6 +113,13 @@ export class Simulator {
                         } else {
                             results.add(color, rarity, 0);
                         }
+
+                        if (rarity != 'focus' && rarity != 'five') {
+                            rollsWithoutFiveStar += 1;
+                        } else {
+                            rollsWithoutFiveStar = 0;
+                        }
+
                     }
                     if (this.stopConditions[color].length != 0
                             && this.conditionsMet(this.stopConditions[color], results)) {
@@ -98,11 +131,17 @@ export class Simulator {
             }
         }
 
+        let allConditionsMet = true;
         for (let i = 0; i < Constants.colors.length; i++) {
             let color = Constants.colors[i];
             results.conditionsMet[color] =
                 this.conditionsMet(this.stopConditions[color], results);
+            if (this.stopConditions[color].length &&
+                !this.conditionsMet(this.stopConditions[color], results)) {
+                allConditionsMet = false;
+            }
         }
+        results.allConditionsMet = allConditionsMet;
         return results;
     }
 
@@ -118,12 +157,25 @@ export class Simulator {
     runTrials(numTrials) {
         let counts = 0;
         let conditionMetCount = {
-            'red': 0, 'blue': 0, 'green': 0, 'colorless': 0
+            'red': 0, 'blue': 0, 'green': 0, 'colorless': 0, 'all': 0
         };
         let totalCounts;
+        let allFives = [];
+        let allFocus = [];
 
         for (let i = 0; i < numTrials; i++) {
             let results = this.runTrial();
+            let totalFives = 0;
+            Object.keys(results.counts['five']).forEach(color => {
+                totalFives += this.sum(results.counts['five'][color]);
+            });
+            let totalFocus = 0;
+            Object.keys(results.counts['focus']).forEach(color => {
+               totalFocus += this.sum(results.counts['focus'][color]);
+            });
+            allFives.push(totalFives);
+            allFocus.push(totalFocus);
+
             if (!totalCounts) {
                 totalCounts = Results.createEmptyCounts(this.unitCounts['focus']);
             } else {
@@ -144,16 +196,19 @@ export class Simulator {
                 let color = Constants.colors[i];
                 conditionMetCount[color] += results.conditionsMet[color] ? 1 : 0;
             }
+            conditionMetCount['all'] += results.allConditionsMet ? 1 : 0;
         }
 
-        Object.keys(conditionMetCount).forEach(color => {
-            conditionMetCount[color] /= numTrials;
+        Object.keys(conditionMetCount).forEach(key => {
+            conditionMetCount[key] /= numTrials;
         });
 
 
         return {
             'conditions': conditionMetCount,
-            'counts': totalCounts
+            'counts': totalCounts,
+            'allFives': allFives,
+            'allFocus': allFocus
         };
     }
 
@@ -161,8 +216,12 @@ export class Simulator {
         return this.sampleDistribution(this.colorGivenRarityDist[rarity]);
     }
 
-    selectRarity() {
-        return this.sampleDistribution(Constants.rarityBaseProbabilities);
+    sum(list) {
+        let sum = 0;
+        for (let i = 0; i < list.length; i++) {
+            sum += list[i];
+        }
+        return sum;
     }
 
     sampleDistribution(distribution) {

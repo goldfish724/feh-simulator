@@ -2,70 +2,183 @@
   <div class="input-row">
 
     <div class="card" *ngFor="let color of colors">
-      <div class="title">
+      <div class="header title {{ color }}">
         {{ color }}
       </div>
 
 
-      <div class="hero-names">
-        Focus Hero Names:
-
-        <div *ngFor="let name of names[color]; let i = index;">
-          <input type="text" [(ngModel)]="names[color][i].name">
-          <button (click)="names[color].splice(i, 1)">
-              Remove hero
-          </button>
-        </div>
-        <button (click)="names[color].push({name: 'Red Hero ' + (names[color].length + 1)})">
-            Add hero
-        </button>
-      </div>
-
-      <hr/>
-
-      <div class="form-row">
-        <input type="checkbox" [(ngModel)]="simulator.shouldRoll[color]"/>
-        Roll {{ color }}
-      </div>
-
-      <div class="conditions card-item" *ngIf="simulator.shouldRoll[color]">
-        Stop after receiving:
-
-        <div class="condition" *ngFor="let condition of simulator.stopConditions[color]; let i = index">
-          <div *ngIf="i != 0">
-            and
+      <div class="card-content">
+        <div class="hero-names">
+          <div class="focus-hero-names">
+              Focus Hero Names:
           </div>
-          <div class="hero-row card-item">
-            <input type="number" [(ngModel)]="condition.count"> copies of
 
-            <select [(ngModel)]="condition.index">
-              <option *ngFor="let name of names[color]; let j = index" [ngValue]="j">
-                {{ name.name }}
-              </option>
-            </select>
+          <div *ngFor="let name of names[color]; let i = index;">
+
+            <div class="input-button-row">
+              <input class="non-md" type="text" [(ngModel)]="names[color][i].name">
+              <button class="remove" md-icon-button (click)="names[color].splice(i, 1)">
+                <!--<i class="material-icons">&#xE15D;</i>-->
+                <i class="material-icons">&#xE14C;</i>
+              </button>
+            </div>
+          </div>
+
+          <div class="align-right add-focus-row">
+            <button md-button
+                    color="primary"
+                    (click)="addHero(color)">
+              Add Focus Hero
+              <!--<i class="material-icons">&#xE146;</i>-->
+            </button>
           </div>
         </div>
-        <button (click)="addCondition(color)">
-            Add condition
-        </button>
+
+        <hr/>
+
+        <div class="form-row">
+          <md-checkbox [(ngModel)]="simulator.shouldRoll[color]">
+            <div class="checkbox-label">
+              Summon {{ color }}
+            </div>
+          </md-checkbox>
+        </div>
+
+        <div class="conditions card-item" *ngIf="simulator.shouldRoll[color]">
+
+          <div class="condition" *ngFor="let condition of simulator.stopConditions[color]; let i = index">
+            <div *ngIf="i == 0" class="stop-after-receiving">
+              Stop after receiving:
+            </div>
+            <div *ngIf="i != 0" class="and">
+              and
+            </div>
+
+            <div class="condition-inner">
+              <div class="remove" (click)="simulator.stopConditions[color].splice(i, 1)" title="Remove condition">
+                <i class="material-icons">&#xE14C;</i>
+              </div>
+              <div class="copies-of-row">
+                <input type="number" class="non-md" [(ngModel)]="condition.count"> <span> copies of</span>
+              </div>
+
+              <md-select [(ngModel)]="condition.index">
+                <md-option *ngFor="let name of names[color]; let j = index" [value]="j">
+                  {{ name.name }}
+                </md-option>
+              </md-select>
+            </div>
+
+          </div>
+          <div class="align-right">
+            <button md-button (click)="addCondition(color)" color="primary">
+              Add condition
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="submit-row">
-      <button (click)="debug()">
-          Debug
-      </button>
+    <div class="card">
+      <strong>About:</strong>
+      <p>
+        This simulator allows you to create a summoning policy and
+        simulate thousands of possible summons in order approximate the probability distributions
+        over the number of each hero type you will receive.
+      </p>
+
+      <br/>
+
+      <strong>How To Use:</strong>
+      <p>
+        First, enter in the hero names of the banner you will be summoning from.
+        It is important to enter in all the heroes from all colors since they all
+        affect each other's probabilities.
+      </p>
+      <p>
+        Select which banners you wish to summon from and the conditions under which
+        you would stop summoning from them. Enter your number of orbs and begin summoning.
+      </p>
+
+      <br/>
+      <strong>Assumptions:</strong>
+      <p>
+        The simulator assumes that, given a rarity, the probability of each hero
+        that can be summoned at that rarity is the same, regardless of the color
+        of the hero.
+      </p>
+
+
+    </div>
+    <div class="card">
+      <strong style="margin-bottom: 15px">Parameters:</strong>
+      <md-form-field>
+        <input mdInput placeholder="Number of Orbs" type="number" [(ngModel)]="simulator.numOrbs">
+      </md-form-field>
+      <md-form-field>
+        <input mdInput placeholder="Number of Simulations" type="number" [(ngModel)]="numTrials">
+      </md-form-field>
+
+      <md-form-field>
+        <input mdInput
+               placeholder="Focus Base Probability"
+               type="number"
+               step="0.01"
+               [(ngModel)]="simulator.baseProb.focus">
+      </md-form-field>
+      <md-form-field>
+        <input mdInput
+               placeholder="Five Star Base Probability"
+               type="number"
+               step="0.01"
+               [(ngModel)]="simulator.baseProb.five">
+      </md-form-field>
+      <md-form-field>
+        <input mdInput
+               placeholder="Four Star Base Probability"
+               type="number"
+               step="0.01"
+               [(ngModel)]="simulator.baseProb.four">
+      </md-form-field>
+      <md-form-field>
+        <input mdInput
+               placeholder="Three Star Base Probability"
+               type="number"
+               step="0.01"
+               [(ngModel)]="simulator.baseProb.three">
+      </md-form-field>
+
+      <div class="align-right run-simulations-container">
+        <button md-raised-button
+                [disabled]="runButtonDisabled"
+                (click)="runSimulation()" color="primary">
+          Run Simulations
+        </button>
+      </div>
+    </div>
   </div>
 
 
-  <div class="charts">
-    <feh-chart
-            *ngFor="let chartData of charts; let i = index"
-            [datasets]="chartData.datasets"
-            [title]="chartData.title"
-            [colors]="chartData.colors"
-            [labels]="chartData.labels"></feh-chart>
+  <div class="charts" id="charts">
+    <div class="chart-category-container" *ngFor="let chartType of ['misc', 'focus', 'five', 'four', 'three']">
+      <div class="chart-category" *ngIf="charts[chartType].length">
+        <div class="title">
+          {{ chartTypeFullText[chartType] }} Percentages
+        </div>
+
+        <div class="charts-container">
+          <div class='chart-container' *ngFor="let chartData of charts[chartType]; let i = index">
+            <feh-chart
+                    [datasets]="chartData.datasets"
+                    [title]="chartData.title"
+                    [colors]="chartData.colors"
+                    [labels]="chartData.labels"></feh-chart>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
