@@ -30,14 +30,16 @@ export class Simulator {
             'green': [],
             'colorless': []
         };
+    }
 
-        this.colorGivenRarityDist = {};
+    public generateColorGivenRarityDist() {
+        let colorGivenRarityDist = {};
         let rarities = Constants.rarities;
         let colors = Constants.colors;
 
         for (let i = 0; i < rarities.length; i++) {
             const distribution = {};
-            this.colorGivenRarityDist[rarities[i]] = distribution;
+            colorGivenRarityDist[rarities[i]] = distribution;
 
             let total = 0;
             for (let j = 0; j < colors.length; j++) {
@@ -47,7 +49,9 @@ export class Simulator {
                 distribution[colors[j]] = this.unitCounts[rarities[i]][colors[j]] / total;
             }
         }
+        return colorGivenRarityDist;
     }
+
 
     runTrial() {
         const results = new Results(this.unitCounts['focus']);
@@ -159,6 +163,7 @@ export class Simulator {
         let conditionMetCount = {
             'red': 0, 'blue': 0, 'green': 0, 'colorless': 0, 'all': 0
         };
+        console.log(this.unitCounts);
         let totalCounts;
         let allFives = [];
         let allFocus = [];
@@ -213,7 +218,8 @@ export class Simulator {
     }
 
     selectColorGivenRarity(rarity) {
-        return this.sampleDistribution(this.colorGivenRarityDist[rarity]);
+        let dist = this.generateColorGivenRarityDist();
+        return this.sampleDistribution(dist[rarity])
     }
 
     sum(list) {
