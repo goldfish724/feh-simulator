@@ -64,11 +64,14 @@ export class Simulator {
                 targetColors.push(color);
             }
         });
+
         let orbsRemaining = this.numOrbs;
 
         while (orbsRemaining > 5) {
 
             if (targetColors.length == 0) {
+                results.breakReason = "colors";
+                console.log(targetColors);
                 break;
             }
 
@@ -82,7 +85,6 @@ export class Simulator {
                 'four': this.baseProb['four'] - (this.baseProb['four'] * 2 * pityRate / nonFiveProb),
                 'three': this.baseProb['three'] - (this.baseProb['three'] * 2 * pityRate / nonFiveProb)
             };
-
 
             for (let i = 0; i < 5; i++) {
                 let rarity = this.sampleDistribution(rarityDistribution);
@@ -102,12 +104,11 @@ export class Simulator {
                 }
             }
 
-
             for (let i = 0; i < stones.length; i++) {
                 let color = stones[i]['color'];
                 let rarity = stones[i]['rarity'];
 
-                if (targetColors.indexOf(color) != -1 || (!desiredColorExists && rollIndex == 1)) {
+                if (targetColors.indexOf(color) != -1 || (!desiredColorExists && rollIndex == 0)) {
                     if (orbsRemaining >= Constants.costs[rollIndex]) {
                         orbsRemaining -= Constants.costs[rollIndex];
 
@@ -127,12 +128,12 @@ export class Simulator {
 
                     }
                     if (this.stopConditions[color].length != 0
+                            && targetColors.indexOf(color) != -1
                             && this.conditionsMet(this.stopConditions[color], results)) {
-
                         targetColors.splice(targetColors.indexOf(color), 1);
                     }
+                    rollIndex += 1;
                 }
-                rollIndex += 1;
             }
         }
 
@@ -147,6 +148,7 @@ export class Simulator {
             }
         }
         results.allConditionsMet = allConditionsMet;
+        results.orbsRemaining = orbsRemaining;
         return results;
     }
 
@@ -160,11 +162,13 @@ export class Simulator {
     }
 
     runTrials(numTrials) {
+        console.log("Conditions: ");
+        console.log(this.stopConditions);
+
         let conditionMetCount = {
             'red': 0, 'blue': 0, 'green': 0, 'colorless': 0, 'all': 0
         };
         this.generateColorGivenRarityDist();
-        console.log(this.unitCounts);
         let totalCounts;
         let allFives = [];
         let allFocus = [];

@@ -5,6 +5,9 @@ export class Results {
     counts: any;
     conditionsMet: any = {};
     allConditionsMet: boolean = false;
+    orbsRemaining: number;
+
+    breakReason: string = "orbs";
 
     constructor(focusCounts) {
         this.counts = Results.createEmptyCounts(focusCounts);
