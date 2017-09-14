@@ -15,7 +15,6 @@ export class AppComponent {
     simulator: Simulator = new Simulator();
     names: any = {};
     meetCondDataset: any;
-    // charts: any[] = [];
     runButtonDisabled: boolean = false;
     charts: any;
     numTrials: number = 1000;
@@ -49,7 +48,13 @@ export class AppComponent {
         let capitalized = color.charAt(0).toUpperCase() + color.slice(1);
         this.names[color].push({name: capitalized + ' Hero ' + (this.names[color].length + 1)});
         this.simulator.unitCounts.focus[color] = this.names[color].length;
-        console.log(this.simulator.unitCounts)
+    }
+
+    removeHero(color, index) {
+        console.log(this.names);
+        console.log(color);
+        this.names[color].splice(index, 1);
+        this.simulator.unitCounts.focus[color] = this.names[color].length;
     }
 
     trackByFn(index: any, item: any) {

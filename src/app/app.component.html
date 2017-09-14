@@ -17,7 +17,7 @@
 
             <div class="input-button-row">
               <input class="non-md" type="text" [(ngModel)]="names[color][i].name">
-              <button class="remove" md-icon-button (click)="names[color].splice(i, 1)">
+              <button class="remove" md-icon-button (click)="removeHero(color, i)">
                 <!--<i class="material-icons">&#xE15D;</i>-->
                 <i class="material-icons">&#xE14C;</i>
               </button>

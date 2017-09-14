@@ -49,7 +49,8 @@ export class Simulator {
                 distribution[colors[j]] = this.unitCounts[rarities[i]][colors[j]] / total;
             }
         }
-        return colorGivenRarityDist;
+        this.colorGivenRarityDist = colorGivenRarityDist;
+        return this.colorGivenRarityDist;
     }
 
 
@@ -86,7 +87,7 @@ export class Simulator {
             for (let i = 0; i < 5; i++) {
                 let rarity = this.sampleDistribution(rarityDistribution);
                 stones.push({
-                    'color': this.selectColorGivenRarity(rarity),
+                    'color': this.sampleDistribution(this.colorGivenRarityDist[rarity]),
                     'rarity': rarity
                 });
             }
@@ -159,10 +160,10 @@ export class Simulator {
     }
 
     runTrials(numTrials) {
-        let counts = 0;
         let conditionMetCount = {
             'red': 0, 'blue': 0, 'green': 0, 'colorless': 0, 'all': 0
         };
+        this.generateColorGivenRarityDist();
         console.log(this.unitCounts);
         let totalCounts;
         let allFives = [];
@@ -218,8 +219,7 @@ export class Simulator {
     }
 
     selectColorGivenRarity(rarity) {
-        let dist = this.generateColorGivenRarityDist();
-        return this.sampleDistribution(dist[rarity])
+        return this.sampleDistribution(this.colorGivenRarityDist);
     }
 
     sum(list) {
